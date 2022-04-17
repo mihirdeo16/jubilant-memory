@@ -15,7 +15,7 @@ def fibdyn(n, memo={}):
     memo[n] = fibdyn(n-1, memo)+fibdyn(n-2, memo)
     return memo[n]
 
-
-print("Enter the Number :")
-n = int(input())
-print(fibdyn(n))
+if __name__=='__main__':
+    """To test the this use n = 100 """
+    n = int(input("Enter the Number :"))
+    print(fibdyn(n))

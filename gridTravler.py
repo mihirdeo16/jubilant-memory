@@ -14,7 +14,7 @@ def gridTraveler(m, n):
         return 0
     return gridTraveler(m-1, n)+gridTraveler(m, n-1)
 
-
-print("Enter the Numbers: m  n ")
-m, n = map(int, input().strip().split())
-print(f'No. of ways are {gridTraveler(m, n)}')
+if __name__=='__main__':
+    """To test the this use n = 100 """
+    m, n = map(int, input("Enter the Numbers: m  n : ").strip().split())
+    print(f'No. of ways are {gridTraveler(m, n)}')

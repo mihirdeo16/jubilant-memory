@@ -11,7 +11,7 @@ def fib(n):
         return 1
     return fib(n-1)+fib(n-2)
 
-
-print("Enter the Number :")
-n = int(input())
-print(fib(n))
+if __name__=='__main__':
+    """To test the this use n = 100 """
+    n = int(input("Enter the Number :"))
+    print(fib(n))

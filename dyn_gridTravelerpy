@@ -18,7 +18,7 @@ def gridTravelerDyn(m, n, memo={}):
     memo[key] = gridTravelerDyn(m-1, n, memo)+gridTravelerDyn(m, n-1, memo)
     return memo[key]
 
-
-print("Enter the Numbers: m  n ")
-m, n = map(int, input().strip().split())
-print(f'No. of ways are {gridTravelerDyn(m, n)}')
+if __name__=='__main__':
+    """To test the this use m n = 100 """
+    m, n = map(int, input("Enter the Numbers: m  n : ").strip().split())
+    print(f'No. of ways are {gridTravelerDyn(m, n)}')
