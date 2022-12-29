@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Queue implementation in Python using Custom Call.
+Queue implementation in Python using Custom class and function.
 """
 
 __author__ = "Mihir Deo"
@@ -14,17 +14,33 @@ class Queue:
         self.queue.append(var)
     def remove(self) -> None:
         if len(self.queue) != 0:
-            self.queue.pop(0)
+            val = self.queue.pop(0)
+            print(val)
     def peek(self) -> list:
         print(self.queue)
 
-def main(operation,operations):
+def class_main(operation,operations):
     """ Main entry point of the of Queue class """
     if operation.startswith("add"):
         operation = operation.strip().split(" ")
         operations[operation[0]](operation[1])
     else:
         operations[operation]()
+
+def fun_main(operation,queue):
+    """ Main entry point of queue using function """
+
+    if operation.startswith("add"):
+
+        _, value = operation.split() 
+        queue.append(value)
+
+    elif operation.startswith("remove"):
+
+        queue.pop(0)
+        
+    else:
+        print(queue)
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
@@ -37,7 +53,9 @@ if __name__ == "__main__":
         "remove": qu.remove,
         "peek": qu.peek
     }
-    value = None
+
+    queue = []
+
     while q:
         print("Press q to quit or perform add, pop and peek operation: ")
 
@@ -46,4 +64,5 @@ if __name__ == "__main__":
         if str(operation) == "q":
             exit()
 
-        main(operation,operations)
+        # class_main(operation,operations)
+        fun_main(operation,queue)
