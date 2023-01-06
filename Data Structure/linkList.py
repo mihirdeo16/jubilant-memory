@@ -15,7 +15,7 @@ class Node:
     def __repr__(self) -> str:
         return f"Node --> {self.val}"
 
-class LinkList:
+class SinglyLinkList:
 # The LinkList class has a head attribute that is initialized to None.
     def __init__(self) -> None:
         self.head = None
@@ -138,3 +138,14 @@ class LinkList:
             current_position +=1
             temp = temp.next
         return(f"Element in the LinkList does not exits")
+
+## Doubly Linked Lists 
+class DNode:
+    def __init__(self,val=None,next=None,previous= None) -> None:
+        self.val = val
+        self.next = next
+        self.previous = previous
+    def __repr__(self) -> str:
+        return f"Node --> {self.val}"
+
+# TODO - DoublyLinkList
