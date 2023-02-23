@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-HashMap
+Discrete element probabilities simulation 
+Ref: https://numpy.org/doc/stable/reference/random/generator.html
 """
 
 __author__ = "Mihir Deo"
