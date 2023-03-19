@@ -41,14 +41,14 @@ def main(arr):
 
     print("HashMap ID with last occurrence is : ",hashMapIdxL)
 
-    # With last element occurrence
+    # With all element occurrence
     for idx, i in enumerate(arr):
         if hashMapIdxs.get(i,0):
             hashMapIdxs[i].append(idx)
         else:
             hashMapIdxs[i] = [idx]
 
-    print("HashMap ID with index values occurrence is : ",hashMapIdxs)
+    print("HashMap ID with all index values occurrence is : ",hashMapIdxs)
 
 if __name__ == "__main__":
     """ This take the data in arr and pass to main  function. Following three types of HashMap is created.
