@@ -25,7 +25,7 @@ def main(arr):
     print("HashMap counter is : ",hashMapCounter)
 
 
-    # HasMapIdxF with element index's last occurred value.
+    # HasMapIdxF with element index's first occurred value.
     for idx, i in enumerate(arr):
         if hashMapIdxF.get(i,0) == 0:
             hashMapIdxF[i] = idx
