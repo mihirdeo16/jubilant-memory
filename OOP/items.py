@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+import re
 
 @dataclass
 class Staff:
     sort_index:int = field(init=False,repr=False)
     name: str
     age: int
-    salary: float = "Not Defined"
+    salary: float = 0.00
 
     def __post_init__(self):
         self.sort_index = self.age
@@ -30,22 +31,24 @@ class Employee:
 
         self.percent_scaled = percent/100
 
-        hiked_salary = self.salary + self.salary*self.percent_scaled
+        self.salary = self.salary + self.salary*self.percent_scaled
 
-        return f"{hiked_salary} 🤑"
+        return f"{self.name} new salary: {self.salary} 🤑"
+    
+    def __lt__(self,other):
+        return (self.salary < other.salary)
         
 
 if __name__ == "__main__":
        
-    employee_obj = Employee("John",25,8000)
-    print(employee_obj)
-    
-    print(employee_obj.salary_hike())
-    print(employee_obj.percent_scaled)
+    employee_obj_1 = Employee("John",25,8000)
+    employee_obj_2 = Employee("Kay",25,1000)
 
+    print(employee_obj_1)
+    print(employee_obj_1.salary_hike())
+
+    sorted_staff_list = sorted([employee_obj_1,employee_obj_2])
+    print(sorted_staff_list)
 
     staff_obj = Staff("John",25,8000)
-
     print(staff_obj)
-
-
