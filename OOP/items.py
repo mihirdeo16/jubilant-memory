@@ -27,7 +27,7 @@ class Employee:
         
         return f"Employee - 🧑 {self.name.upper()}, {self.age}, ${self.salary} 💸"
     
-    def salary_hike(self,percent=10) -> int:
+    def salary_hike(self,percent=10) -> str:
 
         self.percent_scaled = percent/100
 
@@ -35,8 +35,12 @@ class Employee:
 
         return f"{self.name} new salary: {self.salary} 🤑"
     
-    def __lt__(self,other):
+    def __lt__(self,other) -> bool:
         return (self.salary < other.salary)
+    
+    def __eq__(self,other) -> bool:
+
+        return (self.name == other.name and self.age == other.age)
         
 
 if __name__ == "__main__":
@@ -46,6 +50,9 @@ if __name__ == "__main__":
 
     print(employee_obj_1)
     print(employee_obj_1.salary_hike())
+
+    if employee_obj_1 == employee_obj_2:
+        print(f"Duplicate Entry")
 
     sorted_staff_list = sorted([employee_obj_1,employee_obj_2])
     print(sorted_staff_list)
