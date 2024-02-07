@@ -74,7 +74,7 @@ class SinglyLinkList:
     def insert(self,val,position):
         # This is the insert method.
         if position == 0:
-            next_pointer = self.head.next
+            next_pointer = self.head
             self.head = Node(val,next_pointer)
         else:
             temp = self.head
@@ -148,4 +148,89 @@ class DNode:
     def __repr__(self) -> str:
         return f"Node --> {self.val}"
 
-# TODO - DoublyLinkList
+class DoublyLinkList:
+    def __init__(self) -> None:
+        self.head = None
+    def __repr__(self) -> str:
+        temp = self.head
+        str_ = ""
+        while temp:
+            if temp is self.head:
+                str_ += f"Head --> {temp.val}"
+            elif temp.next is None:
+                str_ += f"<--> {temp.val} --> Tail"
+            else:
+                str_ += f"<--> {temp.val} "
+            temp = temp.next
+        return str_
+    
+    def size(self):
+
+        temp = self.head
+        size_counter = 0
+        while temp:
+            size_counter += 1
+            temp = temp.next
+        return size_counter
+    
+    def append(self,val):
+
+        if self.head:
+            temp = self.head
+            while temp.next:
+                temp = temp.next
+            temp.next = DNode(val,previous=temp)
+        else:
+            self.head = DNode(val)
+    def prepend(self,val):
+        if self.head:
+            new_node = DNode(val,next=self.head)
+            self.head.previous = new_node
+            self.head = new_node
+        else:
+            self.head = DNode(val)
+    
+    def insert(self,val,position):
+
+        if position ==0:
+            temp = self.head
+            new_node = DNode(val,next=self.head)
+            temp.previous = new_node
+            self.head = new_node
+        else:
+            temp = self.head
+            current_position = 0
+
+            while temp:
+                current_position += 1
+                if position == current_position:
+                    new_node = DNode(val,next=temp.next, previous=temp)
+                    if temp.next:
+                        temp.next.previous = new_node
+                    temp.next = new_node
+                    break
+
+                temp = temp.next
+    def delete(self,position):
+        temp =self.head
+        position_counter = 0
+        while temp:
+            
+            if position_counter == position:
+                temp.previous.next = temp.next
+                temp.previous  = temp.next.previous
+                break
+            temp= temp.next
+            position_counter += 1
+    
+
+if __name__ == "__main__":
+    ll = DoublyLinkList()
+    ll.append(2) # 0
+    ll.append(3) # 1
+    ll.append(4) # 2 
+    ll.append(5) # 3
+    ll.insert(6,3) # 3  Head --> 2<--> 3<--> 4<--> 6 <--> 5 --> Tail
+    print(ll)
+    ll.delete(2)
+    print(ll)
