@@ -27,7 +27,7 @@ __license__ = "MIT"
 """
 
 
-def convert_adjacency_list(edge_set) -> Dict[list]:
+def convert_adjacency_list(edge_set) -> Dict[int,list]:
 
     adjacency_list = defaultdict(list)
 
