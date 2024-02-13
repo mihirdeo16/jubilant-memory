@@ -82,7 +82,6 @@ def main() -> None:
     tf_idf_obj = TFIDF()
     tf_idf_obj.fit(corpus)
     tfidf_vec = tf_idf_obj.transform(["This is the first first first document."]) # tf_idf_obj.fit_transform(corpus)
-    print(f" TF-IDF vector {tfidf_vec}")
 
 
 if __name__ == "__main__":
