@@ -5,29 +5,14 @@ Graph
 
 from typing import Dict
 from collections import defaultdict
+
 __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
-"""
-    Searching algo:
-        DFS - O(n)
-            HashSet
-        BFS - O(n)
-            Queue Double ended 
-            Hashset
-    Union O(n logn)
-        Forest of Tree
-        To find connected component 
-    Topological Sort O(n)
-        Hashset
-    Dijkstra's Shortest Path Algo (E log(V))
-        Heap, HashSet
-
-"""
 
 
-def convert_adjacency_list(edge_set) -> Dict[int,list]:
+def edgeSet_to_adjacencyList(edge_set) -> Dict[int,list]:
 
     adjacency_list = defaultdict(list)
 
@@ -37,27 +22,57 @@ def convert_adjacency_list(edge_set) -> Dict[int,list]:
     return adjacency_list
 
 
-def convert_edge_set(adjacency_list) -> list[tuple]:
+def adjacencyList_to_edgeSet(adjacency_list) -> list[tuple]:
 
-    edge_set = set()
+    edge_set = []
     for vertext, vertext_list in adjacency_list.items():
         for vect_2 in vertext_list:
-            if any(set((vertext, vect_2)) == set(combination) for combination in edge_set):
-                pass
-            else:
-                edge_set.add((vertext, vect_2))
+            if not any(set((vertext, vect_2)) == set(combination) for combination in edge_set):
+                edge_set.append((vertext, vect_2))
 
     return sorted(list(edge_set))
 
 
-def convert_adjacency_matrix(edge_set) -> list[list[int]]:
+def edgeSet_to_adjacencyMatrix(edge_set) -> list[list[int]]:
 
-    size = max(max(edge_set))
+    size = max(max(edge_set)) +1
     matrix = [[0]*size for _ in range(size)]
 
     for edge_1, edge_2 in edge_set:
         matrix[edge_1][edge_2], matrix[edge_2][edge_1] = 1, 1
     return matrix
+
+def adjacencyList_to_adjacencyMatrix(adjacency_list:Dict[int,list]) -> list[list[int]]:
+
+    size = len(adjacency_list.keys())
+    matrix = [[0]*size for _ in adjacency_list.keys()]
+
+    for edge, edge_list in adjacency_list.items():
+        for edge_2 in edge_list:
+            matrix[edge][edge_2] = 1
+    return matrix
+
+
+def adjacencyMatrix_to_adjacencyList(adjacency_matrix:list[list[int]]) -> Dict[int,list]:
+
+    hashmap = defaultdict(list)
+
+    for edge_1, edge_list in enumerate(adjacency_matrix):
+        for index, edge_2 in enumerate(edge_list):
+            if edge_2==1:
+                hashmap[edge_1].append(index)
+    return hashmap
+
+def adjacencyMatrix_to_edgeSet(adjacency_matrix:list[list[int]]) -> list[tuple]:
+
+    hashset = []
+
+    for edge, edge_list in enumerate(adjacency_matrix):
+
+        for edge_2, val in enumerate(edge_list):
+            if val ==1 and not any(set((edge,edge_2))== set(com) for com in hashset):
+                hashset.append((edge,edge_2))
+    return hashset
 
 
 def main():
@@ -65,9 +80,13 @@ def main():
 
     data = {(0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 4)}
 
-    data_adjacency_list = convert_adjacency_list(data)  # HashMap
-    data_edge_set = convert_edge_set(data_adjacency_list)  # Hashset
-    data_adjacency_matrix = convert_adjacency_matrix(data)  # List of list
+    adjacency_list = edgeSet_to_adjacencyList(data)                           # HashSet to HashMap
+    adjacency_matrix = edgeSet_to_adjacencyMatrix(data)                       # Hashset to Matrix
+    edge_set = adjacencyList_to_edgeSet(adjacency_list)                       # HashMap to Hashset
+    adjacency_matrix = adjacencyList_to_adjacencyMatrix(adjacency_list)       # HashMap to Matrix    
+    adjacency_list = adjacencyMatrix_to_adjacencyList(adjacency_matrix)       # Matrix to HashMap
+    edge_set = adjacencyMatrix_to_edgeSet(adjacency_matrix)                   # Matrix to Hashset
+
 
 
 if __name__ == "__main__":
