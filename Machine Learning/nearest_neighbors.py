@@ -15,6 +15,11 @@ def cosine_similarity(a,b) -> np.float64:
 def euclidean_distance(a,b) -> np.float64:
     return np.sqrt(np.sum(np.square(b-a)))
 
+def manhattan_distance(a,b) -> np.float64:
+    return np.sum(np.abs(a - b))
+
+def cosine_distance(a,b) -> np.float64:
+    return 1 - (np.dot(a,b)/(np.sqrt(np.sum(np.square(a)))* np.sqrt(np.sum(np.square(a)))))
 class KNearestNeighbors:
 
     def __init__(self,n_neighbors:int=5) -> None:
