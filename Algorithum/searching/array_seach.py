@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Binary Search - Time - O(log(n)), Memory - O(1)
+Array searching algorithm
 """
 
 __author__ = "Mihir Deo"
@@ -8,7 +8,11 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 def binary_search(array,ele):
+    
     """
+    Binary Search - Time - O(log(n)), Memory - O(1)
+
+
     We start with the left and right pointers at the beginning and end of the array, respectively. We
     then find the middle element of the array and compare it to the element we're searching for. If the
     middle element is greater than the element we're searching for, we move the right pointer to the
@@ -34,11 +38,32 @@ def binary_search(array,ele):
     return "None"
 
 
+def linear_search(array,ele):
+    """
+    Linear Search Time complexity - O(n) Memory Complexity - O(1)
+
+    It takes an array and an element as input and returns the position of the element in the array if it
+    is present, else returns "None"
+    
+    :param array: The array to search through
+    :param ele: The element to be searched for
+    :return: The position of the element in the array.
+    """
+    for pos,element in enumerate(array):
+        if ele == element:
+            return pos
+    return "None"
+
+
 def main(array,ele):
     """ Main entry point of the app """
     pos = binary_search(array,ele)
 
-    print(f"Element is found at: {pos}")
+    print(f"Binary_search: Element is found at: {pos}")
+
+    pos = linear_search(array,ele)
+
+    print(f"Linear_search: Element is found at: {pos}")
 
 
 if __name__ == "__main__":
