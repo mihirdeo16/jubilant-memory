@@ -7,7 +7,6 @@ __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
-from turtle import forward
 import numpy as np
 
 
@@ -130,4 +129,4 @@ class MultilayerPerceptron(LayerDense):
 
                 self.loss = self.loss_fn(self.act_output_2, self.target)
 
-                self.back_propagation()
+                self.back_propagation() # With SGD
