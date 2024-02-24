@@ -47,13 +47,7 @@ def main() -> None:
     model = KNearestNeighbors(n_neighbors=2)
     print(model.apply(samples, target, x_test))
 
-    x = [[1, 2, 3, 2.5],
-         [2.0, 5.0, -1.0, 2.0],
-         [-1.5, 2.7, 3.3, -0.8]
-         ]
     mlp_model = MultilayerPerceptron(4, 5, "multiclass", 5)
-    res = mlp_model.forward(x)
-    print(res)
 
 
 if __name__ == "__main__":
