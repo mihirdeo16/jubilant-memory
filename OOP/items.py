@@ -41,6 +41,12 @@ class Employee:
     def __eq__(self,other) -> bool:
 
         return (self.name == other.name and self.age == other.age)
+
+    def __format__(self, __format_spec: str) -> str:
+        if __format_spec == "f":
+            return str(f"{self.name} - {self.age} - {self.salary}").capitalize()
+        
+        return super().__format__(__format_spec)
         
 
 if __name__ == "__main__":
