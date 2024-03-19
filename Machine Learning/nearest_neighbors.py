@@ -33,4 +33,8 @@ class KNearestNeighbors:
 
         k_neighbors = target[sorted_indices[:self.n_neighbors]]
 
-        return k_neighbors
+        # Get majority class
+        unique, counts = np.unique(k_neighbors, return_counts=True)
+        k_neighbors_cls = unique[np.argmax(counts)]
+
+        return k_neighbors_cls
