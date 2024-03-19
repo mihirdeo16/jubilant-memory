@@ -36,7 +36,7 @@ class EncoderLayer(nn.Module):
             seq_len=seq_len, output_dim=d_model)
 
         self.multi_head_attention = MultiHeadAttentionWrapper(
-            num_head=num_head, input_dim=d_model)
+            num_heads=num_head, input_dim=d_model)
 
         self.normalization_layer_1 = Normalization(input_dim=d_model)
 
@@ -72,10 +72,10 @@ class DecoderLayer(nn.Module):
             seq_len=seq_len, output_dim=d_model)
 
         self.cross_multi_head_attention = MultiHeadAttentionWrapper(
-            num_head=num_head, input_dim=d_model)
+            num_heads=num_head, input_dim=d_model)
         
         self.masked_multi_head_attention = MultiHeadAttentionWrapper(
-            num_head=num_head, input_dim=d_model)
+            num_heads=num_head, input_dim=d_model)
 
         self.normalization_layer_1 = Normalization(input_dim=d_model)
 
