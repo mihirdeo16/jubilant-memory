@@ -83,7 +83,7 @@ class MultiHeadAttentionWrapper(nn.Module):
 
 
 class MultiHeadedAttention(nn.Module):
-
+    # TODO : issue : Same linear layer is used for all heads
     def __init__(self, num_heads, input_dim, dropout=0.1) -> None:
         super(MultiHeadedAttention, self).__init__()
 
@@ -123,5 +123,32 @@ class MultiHeadedAttention(nn.Module):
         attention_output = self.dropout(attention_output)
 
         attention_scores = torch.cat(attention_output, dim=-1)
+
+        return self.out_proj(attention_scores)
+    
+class MultiQueryAttentionWrapper(nn.Module):
+    
+    def __init__(self, num_queries, input_dim, dropout=0.1) -> None:
+        super(MultiQueryAttentionWrapper, self).__init__()
+
+        self.num_queries = num_queries
+        self.input_dim = input_dim
+        self.query_layer = nn.ModuleList([nn.Linear(input_dim, input_dim) for _ in range(num_queries)])
+        self.key_layer = nn.Linear(input_dim, input_dim)
+        self.value_layer = nn.Linear(input_dim, input_dim)
+        self.out_proj = nn.Linear(input_dim*num_queries, input_dim)
+        self.dropout = nn.Dropout(dropout)
+    def forward(self, input_data, mask=None, encoder_output=None):
+        
+        key_w = self.key_layer(input_data)
+        value_w = self.value_layer(input_data)
+
+        for query in self.query_layer:
+            attention_src = torch.matmul(query(input_data), key_w.transpose(-2, -1))
+            attention_src = attention_src / torch.sqrt(torch.tensor(self.input_dim))
+            attention_prob = torch.softmax(attention_src, dim=-1)
+            attention_output = torch.matmul(attention_prob, value_w)
+            attention_output = self.dropout(attention_output)
+            attention_scores = torch.cat(attention_output, dim=-1)
 
         return self.out_proj(attention_scores)
