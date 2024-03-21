@@ -9,6 +9,7 @@ __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
+
 class SelfAttention(nn.Module):
     """
     The key/value/query concepts come from retrieval systems. 
@@ -96,14 +97,18 @@ class MultiheadAttention(nn.Module):
 
         self.proj_layer = nn.Linear(d_model * num_heads, d_model)
 
-    def forward(self, input_data,mask=None):
+    def forward(self, input_data, mask=None):
 
         # Project Q, K, and V for each head
-        query = self.query_layer(input_data).view(input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model )
-        key = self.key_layer(input_data).view(input_data.shape[0],input_data.shape[1], self.num_heads, self.d_model )
-        value = self.value_layer(input_data).view(input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model )
+        query = self.query_layer(input_data).view(
+            input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
+        key = self.key_layer(input_data).view(
+            input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
+        value = self.value_layer(input_data).view(
+            input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
 
-        scores = torch.divide(torch.einsum("nqhd,nkhd->nhqk",[query,key]),torch.sqrt(torch.tensor(self.d_model)))
+        scores = torch.divide(torch.einsum(
+            "nqhd,nkhd->nhqk", [query, key]), torch.sqrt(torch.tensor(self.d_model)))
 
         # Apply mask (if provided)
         if mask is not None:
@@ -111,13 +116,14 @@ class MultiheadAttention(nn.Module):
             scores = scores.masked_fill(mask == 0, -1e9)
 
         # Apply softmax to scores (attention weights)
-        weights = torch.softmax(scores,dim=-1)
+        weights = torch.softmax(scores, dim=-1)
 
         # Attention layer output
         output = torch.einsum("nhkq,nvhd->nvhd", weights, value)
 
         # Concatenate heads and reshape back
-        concat = output.view(input_data.shape[0], input_data.shape[1], self.d_model)
+        concat = output.view(
+            input_data.shape[0], input_data.shape[1], self.head_dim)
 
         # Final linear layer
         proj_layer = self.proj_layer(concat)
@@ -154,3 +160,41 @@ class MultiQueryAttentionWrapper(nn.Module):
             attention_scores = torch.cat(attention_output, dim=-1)
 
         return self.out_proj(attention_scores)
+
+class MultiQueryAttention(nn.Module):
+
+    def __init__(self, d_model,num_queries) -> None:
+        super(MultiQueryAttention, self).__init__()
+
+        self.num_queries = num_queries
+        self.d_model = d_model
+        self.queries = self.num_queries * self.d_model
+
+        assert d_model % num_queries == 0, "d_model must be a multiple of num_queries"
+
+        self.query_layers = nn.Linear(d_model, d_model * num_queries)
+        self.key_layer = nn.Linear(d_model, d_model)
+        self.value_layer = nn.Linear(d_model, d_model)
+
+        self.out_proj = nn.Linear(d_model*num_queries , d_model)
+
+    def forward(self, input_data, mask=None):
+
+        query = self.query_layers(input_data).view(input_data.shape[0],input_data.shape[1],self.num_queries,self.d_model)
+        key = self.key_layer(input_data)
+        value = self.value_layer(input_data)
+
+        scores = torch.divide(torch.einsum("bqnd,bkd->bqnk",[query,key]),torch.sqrt(torch.tensor(self.d_model)))
+
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        weights = torch.softmax(scores, dim=-1)
+
+        output = torch.einsum("bqnk,bvd->bqnd",[weights,value])
+
+        concat = output.view(input_data.shape[0],input_data.shape[1],self.queries)
+
+        proj_layer = self.out_proj(concat)
+
+        return proj_layer
