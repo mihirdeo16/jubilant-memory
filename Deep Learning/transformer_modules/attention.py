@@ -81,71 +81,73 @@ class MultiHeadAttentionWrapper(nn.Module):
 
         return self.out_proj(context_vec)
 
-
-class MultiHeadedAttention(nn.Module):
-    # TODO : issue : Same linear layer is used for all heads
-    def __init__(self, num_heads, input_dim, dropout=0.1) -> None:
-        super(MultiHeadedAttention, self).__init__()
-
+class MultiheadAttention(nn.Module):
+    def __init__(self, d_model, num_heads):
+        super(MultiheadAttention, self).__init__()
+        self.d_model = d_model
         self.num_heads = num_heads
-        self.input_dim = input_dim
-        self.query_layer = nn.Linear(input_dim, input_dim)
-        self.key_layer = nn.Linear(input_dim, input_dim)
-        self.value_layer = nn.Linear(input_dim, input_dim)
-        self.out_proj = nn.Linear(input_dim*num_heads, input_dim)
-        self.dropout = nn.Dropout(dropout)
+        self.head_dim = d_model * num_heads
 
-    def forward(self, input_data, mask=None, encoder_output=None):
+        assert d_model % num_heads == 0, "d_model must be a multiple of num_heads"
 
-        query_w = torch.stack(
-            [self.query_layer(input_data)]*self.num_heads, dim=0)
+        self.query_layer = nn.Linear(d_model, d_model * num_heads)
+        self.key_layer = nn.Linear(d_model, d_model * num_heads)
+        self.value_layer = nn.Linear(d_model, d_model * num_heads)
 
-        if encoder_output is not None:
-            key_w = torch.stack(
-                [self.key_layer(encoder_output)]*self.num_heads, dim=0)
-            value_w = torch.stack(
-                [self.value_layer(encoder_output)]*self.num_heads, dim=0)
-        else:
-            key_w = torch.stack([self.key_layer(input_data)]
-                                * self.num_heads, dim=0)
-            value_w = torch.stack(
-                [self.value_layer(input_data)]*self.num_heads, dim=0)
+        self.proj_layer = nn.Linear(d_model * num_heads, d_model)
 
-        attention_src = torch.matmul(query_w, key_w.transpose(-2, -1))
+    def forward(self, input_data,mask=None):
 
-        attention_src = attention_src / \
-            torch.sqrt(torch.tensor(self.input_dim))
+        # Project Q, K, and V for each head
+        query = self.query_layer(input_data).view(input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model )
+        key = self.key_layer(input_data).view(input_data.shape[0],input_data.shape[1], self.num_heads, self.d_model )
+        value = self.value_layer(input_data).view(input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model )
 
-        attention_prob = torch.softmax(attention_src, dim=-1)
+        scores = torch.divide(torch.einsum("nqhd,nkhd->nhqk",[query,key]),torch.sqrt(torch.tensor(self.d_model)))
 
-        attention_output = torch.matmul(attention_prob, value_w)
+        # Apply mask (if provided)
+        if mask is not None:
+            # Mask out padding values
+            scores = scores.masked_fill(mask == 0, -1e9)
 
-        attention_output = self.dropout(attention_output)
+        # Apply softmax to scores (attention weights)
+        weights = torch.softmax(scores,dim=-1)
 
-        attention_scores = torch.cat(attention_output, dim=-1)
+        # Attention layer output
+        output = torch.einsum("nhkq,nvhd->nvhd", weights, value)
 
-        return self.out_proj(attention_scores)
-    
+        # Concatenate heads and reshape back
+        concat = output.view(input_data.shape[0], input_data.shape[1], self.d_model)
+
+        # Final linear layer
+        proj_layer = self.proj_layer(concat)
+
+        return proj_layer
+
 class MultiQueryAttentionWrapper(nn.Module):
-    
+
     def __init__(self, num_queries, input_dim, dropout=0.1) -> None:
         super(MultiQueryAttentionWrapper, self).__init__()
 
         self.num_queries = num_queries
         self.input_dim = input_dim
-        self.query_layer = nn.ModuleList([nn.Linear(input_dim, input_dim) for _ in range(num_queries)])
+        self.query_layer = nn.ModuleList(
+            [nn.Linear(input_dim, input_dim) for _ in range(num_queries)])
         self.key_layer = nn.Linear(input_dim, input_dim)
         self.value_layer = nn.Linear(input_dim, input_dim)
         self.out_proj = nn.Linear(input_dim*num_queries, input_dim)
         self.dropout = nn.Dropout(dropout)
+
     def forward(self, input_data, mask=None, encoder_output=None):
-        
+
         key_w = self.key_layer(input_data)
         value_w = self.value_layer(input_data)
 
         for query in self.query_layer:
-            attention_src = torch.matmul(query(input_data), key_w.transpose(-2, -1))
-            attention_src = attention_src / torch.sqrt(torch.tensor(self.input_dim))
+            attention_src = torch.matmul(
+                query(input_data), key_w.transpose(-2, -1))
+            attention_src = attention_src / \
+                torch.sqrt(torch.tensor(self.input_dim))
             attention_prob = torch.softmax(attention_src, dim=-1)
             attention_output = torch.matmul(attention_prob, value_w)
             attention_output = self.dropout(attention_output)
