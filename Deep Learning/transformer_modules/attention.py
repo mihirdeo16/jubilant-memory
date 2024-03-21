@@ -63,7 +63,6 @@ class SelfAttention(nn.Module):
 
         return attention_results
 
-
 class MultiHeadAttentionWrapper(nn.Module):
     def __init__(self, num_heads, input_dim) -> None:
         super(MultiHeadAttentionWrapper, self).__init__()
@@ -196,5 +195,35 @@ class MultiQueryAttention(nn.Module):
         concat = output.view(input_data.shape[0],input_data.shape[1],self.queries)
 
         proj_layer = self.out_proj(concat)
+
+        return proj_layer
+
+class GroupedQueryAttention(nn.Module):
+    def __init__(self, d_model, num_groups, num_queries_per_group):
+        super(GroupedQueryAttention, self).__init__()
+        self.d_model = d_model
+        self.num_groups = num_groups
+        self.num_queries_per_group = num_queries_per_group
+
+        self.query_layers = nn.Linear(d_model, d_model * num_groups * num_queries_per_group)
+        self.key_layer = nn.Linear(d_model, d_model*num_groups)
+        self.value_layer = nn.Linear(d_model, d_model*num_groups)
+        self.out_proj = nn.Linear(d_model*num_groups, d_model)
+
+    def forward(self,input_data):
+            
+        query = self.query_layers(input_data).view(input_data.shape[0],input_data.shape[1],self.num_groups,self.num_queries_per_group,self.d_model)
+
+        key = self.key_layer(input_data).view(input_data.shape[0],input_data.shape[1],self.num_groups,self.d_model)
+
+        value = self.value_layer(input_data).view(input_data.shape[0],input_data.shape[1],self.num_groups,self.d_model)
+
+        scores = torch.divide(torch.einsum("bqghd,bkgd-> bqhg", [query, key]), torch.sqrt(torch.tensor(self.d_model)))
+
+        weights = torch.softmax(scores, dim=-1)
+
+        output = torch.einsum("bqhg,bvgd->bvgd", [weights, value]).view(input_data.shape[0],input_data.shape[1],self.num_groups*self.d_model)
+
+        proj_layer = self.out_proj(output)
 
         return proj_layer
