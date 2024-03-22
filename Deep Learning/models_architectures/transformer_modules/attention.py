@@ -96,15 +96,22 @@ class MultiheadAttention(nn.Module):
 
         self.proj_layer = nn.Linear(d_model * num_heads, d_model)
 
-    def forward(self, input_data, mask=None):
+    def forward(self, input_data, mask=None,endcoder_output=None):
 
         # Project Q, K, and V for each head
         query = self.query_layer(input_data).view(
             input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
-        key = self.key_layer(input_data).view(
-            input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
-        value = self.value_layer(input_data).view(
-            input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
+        
+        if endcoder_output:
+            key = self.key_layer(endcoder_output).view(
+                endcoder_output.shape[0], endcoder_output.shape[1], self.num_heads, self.d_model)
+            value = self.value_layer(endcoder_output).view(
+                endcoder_output.shape[0], endcoder_output.shape[1], self.num_heads, self.d_model)
+        else:
+            key = self.key_layer(input_data).view(
+                input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
+            value = self.value_layer(input_data).view(
+                input_data.shape[0], input_data.shape[1], self.num_heads, self.d_model)
 
         scores = torch.divide(torch.einsum(
             "nqhd,nkhd->nhqk", [query, key]), torch.sqrt(torch.tensor(self.d_model)))

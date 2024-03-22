@@ -19,7 +19,7 @@ Transformer architecture is made up of following components:
 """
 
 from transformer_modules.embedding import EmbeddingLayer, PositionalEncoding
-from transformer_modules.attention import MultiHeadAttentionWrapper
+from transformer_modules.attention import MultiheadAttention
 from transformer_modules.feedforward_network import FeedForward
 from transformer_modules.normalization_layer import Normalization
 
@@ -35,8 +35,8 @@ class EncoderLayer(nn.Module):
         self.position_encoding = PositionalEncoding(
             seq_len=seq_len, output_dim=d_model)
 
-        self.multi_head_attention = MultiHeadAttentionWrapper(
-            num_heads=num_head, input_dim=d_model)
+        self.multi_head_attention = MultiheadAttention(
+            num_heads=num_head, d_model=d_model)
 
         self.normalization_layer_1 = Normalization(input_dim=d_model)
 
@@ -51,7 +51,7 @@ class EncoderLayer(nn.Module):
         out_2 = self.position_encoding.forward(out_1)
 
         out_3 = self.multi_head_attention.forward(
-            out_2, attention_mask=attention_mask)
+            out_2, mask=attention_mask)
 
         out_4 = self.normalization_layer_1.forward(out_2+out_3)
 
@@ -71,11 +71,11 @@ class DecoderLayer(nn.Module):
         self.position_encoding = PositionalEncoding(
             seq_len=seq_len, output_dim=d_model)
 
-        self.cross_multi_head_attention = MultiHeadAttentionWrapper(
-            num_heads=num_head, input_dim=d_model)
+        self.cross_multi_head_attention = MultiheadAttention(
+            num_heads=num_head, d_model=d_model)
         
-        self.masked_multi_head_attention = MultiHeadAttentionWrapper(
-            num_heads=num_head, input_dim=d_model)
+        self.masked_multi_head_attention = MultiheadAttention(
+            num_heads=num_head, d_model=d_model)
 
         self.normalization_layer_1 = Normalization(input_dim=d_model)
 
@@ -92,12 +92,12 @@ class DecoderLayer(nn.Module):
         out_2 = self.position_encoding.forward(out_1)
 
         out_3 = self.masked_multi_head_attention.forward(
-            out_2, attention_mask=masked_attention)
+            out_2, mask=masked_attention)
 
         out_4 = self.normalization_layer_1.forward(out_2+out_3)
 
         out_5 = self.cross_multi_head_attention.forward(
-            out_2, attention_mask=cross_attention,encoder_output=encoder_output)
+            out_2, mask=cross_attention,encoder_output=encoder_output)
 
         out_6 = self.normalization_layer_2.forward(out_4+out_5)
 
