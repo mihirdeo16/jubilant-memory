@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-"""
-Merge Sort - with T - O(n*log(n)) and M - O(1) using Divide and Conquer approach
-"""
 
 __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
-
 def merge_sort(arr):
     """
+    Merge Sort - with T - O(n*log(n)) and M - O(1) using Divide and Conquer approach
+
     Merge_sort(arr, l, r) sorts the array arr[l..r] using merge sort
     
     :param arr: The array to be sorted
@@ -46,15 +44,54 @@ def merge_sort(arr):
             s +=1
     return arr
 
+def bubble_sort(arr):
+    """
+    Bubble Sort - with T - O(n^2) and M - O(1)
+
+    For each element in the array, find the minimum element in the array and swap it with the current
+    element
+    
+    :param arr: The array to be sorted
+    :return: The sorted array
+    """
+    for i in range(0,len(arr)):
+        for j in range(0,len(arr)-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j],arr[j+1] = arr[j+1],arr[j]
+    return arr
+
+def selection_sort(arr):
+    """
+    Selection Sort - with T - O(n^2) and M - O(1)
+    
+    For each element in the array, find the minimum element in the array and swap it with the current
+    element
+    
+    :param arr: The array to be sorted
+    :return: The sorted array
+    """
+    for i in range(0,len(arr)):
+        minIdx = i
+        for j in range(i+1,len(arr)):
+            if arr[minIdx] > arr[j]:
+                minIdx = j
+        if minIdx != i:
+            arr[minIdx],arr[i] = arr[i],arr[minIdx]
+    return arr
+
 def main(arr):
     """ Main entry point of the app """
-
     # Call the selection sort
+    arr = selection_sort(arr)
+    
+    # Call the bubble sort
+    arr = bubble_sort(arr)
+
+    # Call the merge sort 
     arr = merge_sort(arr)
 
     # Print the results
-    print(f'Sorted element using Merge Sort : {arr}')
-
+    print(f'Sorted element using Bubble Sort : {arr}')
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
