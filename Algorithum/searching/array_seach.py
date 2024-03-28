@@ -7,11 +7,13 @@ __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
-def binary_search(array,ele):
+from typing import List
+
+def binary_search(array:List[int],ele:int):
     
     """
     Binary Search - Time - O(log(n)), Memory - O(1)
-
+    It assumes that the array is sorted. It uses the divide and conquer approach to search for an element
 
     We start with the left and right pointers at the beginning and end of the array, respectively. We
     then find the middle element of the array and compare it to the element we're searching for. If the
@@ -38,11 +40,11 @@ def binary_search(array,ele):
     return "None"
 
 
-def linear_search(array,ele):
+def linear_search(array:List[int],ele:int):
     """
     Linear Search Time complexity - O(n) Memory Complexity - O(1)
 
-    It takes an array and an element as input and returns the position of the element in the array if it
+    It takes an array as input and element to be search and returns the position of the element in the array if it
     is present, else returns "None"
     
     :param array: The array to search through
