@@ -8,6 +8,9 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 
+from re import A
+from typing import List, Any 
+
 class Node:
     """Tree Node """
 
@@ -139,6 +142,91 @@ def max_depth_of_tree(root):
     return root.value + max(max_depth_of_tree(root.left), max_depth_of_tree(root.right))
 
 
+def array_representation(root) -> List[Any]:
+    """
+    Have to use Breath First Search
+    """
+    queue = [root]
+    array= []
+
+    while queue:
+
+        node = queue.pop(0)
+        if node:
+
+            array.append(node.value)
+
+            queue.append(node.left)
+            queue.append(node.right)
+
+        else:
+            array.append(None)
+    
+    while array and array[-1] is None:
+        array.pop()
+
+    return array
+
+def breath_first_array(array_tree):
+
+    if array_tree is None:
+        return []
+    
+    queue= [0]
+    res = []
+
+    while queue:
+        current_index = queue.pop(0)
+        left_index = 2* current_index + 1
+        right_index = 2* current_index + 2
+
+
+        if current_index < len(array_tree) :
+            res.append(array_tree[current_index])
+
+            if left_index < len(array_tree):
+                queue.append(left_index)
+
+            if right_index < len(array_tree):
+                queue.append(right_index)
+            
+    return res
+
+def depth_first_array(array_tree):
+
+    if array_tree is None:
+        return []
+    
+    stack= [0]
+    res = []
+
+    while stack:
+
+        current_index = stack.pop()
+
+        left_index = 2* current_index + 1
+        right_index = 2* current_index + 2
+
+        if current_index < len(array_tree) :
+        
+            res.append(array_tree[current_index])
+
+            if right_index < len(array_tree):
+                stack.append(right_index)
+
+            if left_index < len(array_tree):
+                stack.append(left_index)
+
+    return res
+
+def depth_first_array_recursive(array_tree,index=0):
+    if array_tree is None or index >= len(array_tree):
+        return []
+    if len(array_tree) < 1:
+        return array_tree[index]
+    return [array_tree[index]] + depth_first_array_recursive(array_tree,2*index+1) + depth_first_array_recursive(array_tree,2*index+2)
+
+
 def main():
     """
     Sample Tree:
@@ -149,19 +237,18 @@ def main():
      4    2       1
 
     """
-
-    leftChild_2_1 = Node(4)
-    rightChild_2_1 = Node(2)
-    rightChild_2_2 = Node(1)
-
-    leftChild = Node(11, left=leftChild_2_1, right=rightChild_2_1)
-    rightChild = Node(4, right=rightChild_2_2)
-    root = Node(3, left=leftChild, right=rightChild)
+    root = Node(
+                3, 
+                left=Node(11, left=Node(4), right=Node(2)), 
+                right=Node(4, right=Node(1))
+                )
 
     print(f"depth_first_traversal: {depth_first_traversal(root)}")
     print(
         f"depth_first_traversal_recursive: {depth_first_traversal_recursive(root)}")
+    
     print(f"breath_first_traversal: {breath_first_traversal(root)}")
+
 
     ele = 1
     print(
@@ -174,6 +261,17 @@ def main():
     print(f"tree sum: {tree_sum(root)}")
     print(f"tree_min_value: {tree_min_value(root)}")
     print(f"max_depth_of_tree: {max_depth_of_tree(root)}")
+
+
+    print(f"\n\narray_representation: {array_representation(root)}")
+    array_tree = array_representation(root)
+
+    print(f"breath_first_array: {breath_first_array(array_tree)}")
+
+
+    print(f"depth_first_array: {depth_first_array(array_tree)}")
+    print(f"depth_first_array_recursive: {depth_first_array_recursive(array_tree)}")
+
 
 
 if __name__ == "__main__":
