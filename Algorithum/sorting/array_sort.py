@@ -15,21 +15,19 @@ def quick_sort(arr: List[int]):
     Then compare first and last element with it and swap it if greater or less than pivot.
     Finally put pivot in middle and run it recursively.
     """
-    if len(arr) <= 1:
+    if len(arr)<= 1:
         return arr
     else:
         pivot = arr[0]
-        less_than_pivot, greater_than_pivot = [],[]
+        less_than_pivot, greater_than_pivot = [], []
 
-        for x in arr[1:]:
-            if pivot >= x:
-                less_than_pivot.append(x)
-
-        for x in arr[1:]:
-            if pivot <= x:
-                greater_than_pivot.append(x)
-
-        return quick_sort(less_than_pivot)+[pivot]+quick_sort(greater_than_pivot)
+        for ele in arr[1:]:
+            if ele <= pivot:
+                less_than_pivot.append(ele)
+            else:
+                greater_than_pivot.append(ele)
+        
+        return quick_sort(less_than_pivot)+[pivot] + quick_sort(greater_than_pivot)
 
 def merge_sort(arr: List[int]):
     """
