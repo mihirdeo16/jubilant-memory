@@ -9,76 +9,158 @@ __license__ = "MIT"
 
 from typing import Dict, Set, List
 
-adjacencyList = Dict[int,List[int]]
+adjacencyList = Dict[int, List[int]]
 
-def dfs(graph:adjacencyList):
-    """ Depth First Search
+
+def dfs(graph: adjacencyList)  :
+    """ 
+    Depth First Search
+
+    Time Complexity: O(V+E)
+    Space Complexity: O(V)
+
+    It takes a graph as input and returns the traversal order of the graph using Depth First Search.
+
+    Logic: It uses stack to store the order, and set to keep track. Strategy here is to exploit one vertex and going as deep as possible 
+    along each branch before backtracking. We start with first node in graph, add to stack.While our stack is not empty, we pop last element, 
+    perform desire operation on it, (add to list, check if target etc.)Then add as visited in set, so we don't visit again. 
+    Then iterate over all connected elements, add to our stack. This conclude our DFS with stack.
+
+    """
+    if graph is None:
+        return ""
     
-    Time Complexity: O(V+E) and Space Complexity: O(V)
+    visited = set()
+    vertex = next(iter(graph))
+    stack = [vertex]
+
+    result = []
+    while stack:
+        vertex = stack.pop()
+        visited.add(vertex)
+
+        result.append(str(vertex))  # Save the result
+
+        for neighbor in graph[vertex]:
+            if neighbor not in visited:
+                stack.append(neighbor)
+
+    return ", ".join(result)
+
+
+def dfs_recursive(graph: adjacencyList):
+    """ Depth First Search recursively
+
+    Time Complexity: O(V+E)
+    Space Complexity: O(1)
 
     It takes a graph as input and returns the traversal order of the graph using Depth First Search
-    Logic: We start with first node then visit its first neighbor and then its neighbor and so on. If we reach a node which has no neighbor to visit, we backtrack to the previous node and visit its other neighbor. We repeat this process until we visit all the nodes in the graph.
-    
+
+    Logic: For given graph, we first define empty set to save visited elements, then define subfunction to iterate recursively over start vertex. 
+    As base condition we check does vertex already exist in our set, if not then we will perform first operation of interest (add to list, check condition) then add that element in visited set. Next iterate over all neighbors of vertex. For each vertex first we check vertex not in visited set and them we will call same subfunction with new neighbor as vertex. Here by recursive nature, we will go first as deep as possible on first 
+    neighbor itself and achieve depth first logic and then others. 
+    Lastly, some times you may have not connected component and base case of empty graph need to take care of 
+
     """
-
-    visted = set()
-    traversal_order = []
-
-    def dfs_util(node:int):
-        visted.add(node)
-        traversal_order.append(node)
-        for neighbor in graph[node]:
-            if neighbor not in visted:
-                dfs_util(neighbor)
+    if graph is None:
+        return ""
     
-    dfs_util(0)
-    return traversal_order
+    visited = set()
+    vertex = next(iter(graph))
+    result = []
 
-def bfs(graph:adjacencyList):
+    def dfs_utils(vertex):
+        if vertex not in visited:
+            result.append(str(vertex))  # Save the result
+            visited.add(vertex)
+            for neighbor in graph[vertex]:
+                if neighbor not in visited:
+                    dfs_utils(neighbor)
+
+    dfs_utils(vertex)
+
+    # Loop through all nodes in the graph to handle disconnected components
+    for vertex in graph:
+        if vertex not in visited:
+            dfs_utils(vertex)
+
+    return ", ".join(result)
+
+
+def bfs(graph: adjacencyList):
     """ Breadth First Search
-    
-    Time Complexity: O(V+E) and Space Complexity: O(V)
+
+    Time Complexity: O(V+E)
+    Space Complexity: O(V)
 
     It takes a graph as input and returns the traversal order of the graph using Breadth First Search
 
-    Logic: We start with the first node and visit all its neighbors.  Then we visit the neighbors of the neighbors at same level so on. We repeat this process until we visit all the nodes in the graph.
+    Logic: It uses queue to store the order, and set to keep track. Strategy here is to exploit all neighbors of given vertex before moving to step deep. 
+    We start with first vertex in graph, add to queue. While our queue is not empty, we dequeue (pop) first element, and perform desire operation on it, 
+    (add to list, check if target etc.). Then add as visited in set, so we don't visit again. Then iterate over all connected neighbors, add to our queue. 
+    This conclude our BFS with queue.
     """
 
-    visted = set()
-    traversal_order = []
+    if graph is None:
+        return ""
+    visited = set()
+    vertex = next(iter(graph))
+    queue = [vertex]
 
-    def bfs_util(node:int):
-        visted.add(node)
-        queue = [node]
-        while queue:
-            node = queue.pop(0)
-            traversal_order.append(node)
-            for neighbor in graph[node]:
-                if neighbor not in visted:
-                    visted.add(neighbor)
-                    queue.append(neighbor)
-    
-    bfs_util(0)
-    return traversal_order
+    result = []
+
+    while queue:
+
+        vertex = queue.pop(0)
+        visited.add(vertex)
+
+        result.append(str(vertex))  # Save result
+
+        for neighbor in graph[vertex]:
+            if neighbor not in visited:
+                queue.append(neighbor)
+
+    return ", ".join(result)
+
 
 def main():
     """ Main entry point of the app
+                   0               11 --- 12        14 --- 15
+            /              \               |
+            2               1              13
+         /    \              \
+        5 ---- 6             10
+      /                          \
+    4                               8
+                                      \
+                                        9
+
     """
 
     # This is bi-directional graph
     graph = {
-            0: [2, 1],
-            2: [0, 5, 6],
-            5: [2, 4],
-            4: [5],
-            6: [2],
-            1: [0, 10],
-            10: [1, 8],
-            8: [10, 9],
-            9: [8]
-        }
-    print(f"DFS: {dfs(graph)}")
-    print(f"BFS: {bfs(graph)}")
+        0: [2, 1],
+        1: [0, 10],
+        2: [0, 5, 6],
+        5: [2, 4, 6],
+        4: [5],
+        6: [2],
+        10: [1, 8],
+        8: [10, 9],
+        9: [8],
+        11: [12],
+        12: [11, 13],
+        13: [12],
+        14: [15],
+        15: [14],
+        16: []
+    }
+
+    print(f"Depth First Search: {dfs(graph)}")
+
+    print(f"Depth First Search recursive: {dfs_recursive(graph)}")
+
+    print(f"Breath First Search: {bfs(graph)}")
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
