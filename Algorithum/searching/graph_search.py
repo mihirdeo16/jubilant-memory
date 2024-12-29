@@ -52,7 +52,7 @@ def dfs_recursive(graph: adjacencyList):
     """ Depth First Search recursively
 
     Time Complexity: O(V+E)
-    Space Complexity: O(1)
+    Space Complexity: O(V)
 
     It takes a graph as input and returns the traversal order of the graph using Depth First Search
 
