@@ -24,6 +24,15 @@ def edgeSet_to_adjacencyList(edge_set: edgeSet) -> adjacencyList:
         adjacency_list[vertext_2].append(vertext_1)
     return adjacency_list
 
+def edgeSet_to_adjacencyMatrix(edge_set: edgeSet) -> adjacencyMatrix:
+
+    size = max(max(edge_set)) + 1
+    matrix = [[0]*size for _ in range(size)]
+
+    for edge_1, edge_2 in edge_set:
+        matrix[edge_1][edge_2], matrix[edge_2][edge_1] = 1, 1
+    return matrix
+
 
 def adjacencyList_to_edgeSet(adjacency_list: adjacencyList) -> edgeSet:
 
@@ -34,17 +43,6 @@ def adjacencyList_to_edgeSet(adjacency_list: adjacencyList) -> edgeSet:
                 edge_set.append((vertext, vect_2))
 
     return sorted(list(edge_set))
-
-
-def edgeSet_to_adjacencyMatrix(edge_set: edgeSet) -> adjacencyMatrix:
-
-    size = max(max(edge_set)) + 1
-    matrix = [[0]*size for _ in range(size)]
-
-    for edge_1, edge_2 in edge_set:
-        matrix[edge_1][edge_2], matrix[edge_2][edge_1] = 1, 1
-    return matrix
-
 
 def adjacencyList_to_adjacencyMatrix(adjacency_list: adjacencyList) -> adjacencyMatrix:
 
@@ -81,22 +79,38 @@ def adjacencyMatrix_to_edgeSet(adjacency_matrix: adjacencyMatrix) -> edgeSet:
 
 
 def main():
-    """ Main entry point of the app """
+    """ Main entry point of the app 
+
+            2 ---- 0 -- 1
+             \     |    /
+               \   |   /
+                   3
+                   |
+                   4
+    """
+
+
 
     data = [(0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 4)]
 
-    adjacency_list = edgeSet_to_adjacencyList(
-        data)                           # HashSet to HashMap
-    adjacency_matrix = edgeSet_to_adjacencyMatrix(
-        data)                       # Hashset to Matrix
-    edge_set = adjacencyList_to_edgeSet(
-        adjacency_list)                       # HashMap to Hashset
-    adjacency_matrix = adjacencyList_to_adjacencyMatrix(
-        adjacency_list)       # HashMap to Matrix
-    adjacency_list = adjacencyMatrix_to_adjacencyList(
-        adjacency_matrix)       # Matrix to HashMap
-    edge_set = adjacencyMatrix_to_edgeSet(
-        adjacency_matrix)                   # Matrix to Hashset
+    # HashSet to HashMap
+    adjacency_list = edgeSet_to_adjacencyList(data)
+
+    # Hashset to Matrix
+    adjacency_matrix = edgeSet_to_adjacencyMatrix(data)
+
+
+    # HashMap to Hashset
+    edge_set = adjacencyList_to_edgeSet(adjacency_list)
+
+    # HashMap to Matrix
+    adjacency_matrix = adjacencyList_to_adjacencyMatrix(adjacency_list)
+
+    # Matrix to HashMap
+    adjacency_list = adjacencyMatrix_to_adjacencyList(adjacency_matrix)
+
+    # Matrix to Hashset
+    edge_set = adjacencyMatrix_to_edgeSet(adjacency_matrix)
 
 
 if __name__ == "__main__":
