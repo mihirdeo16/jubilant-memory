@@ -31,7 +31,7 @@ def quick_sort(arr: List[int]):
 
 def merge_sort(arr: List[int]):
     """
-    Merge Sort - with T - O(n*log(n)) and M - O(1) using Divide and Conquer approach
+    Merge Sort - with T - O(n*log(n)) and M - O(n) using Divide and Conquer approach
 
     Merge_sort(arr, l, r) sorts the array arr[l..r] using merge sort
 
