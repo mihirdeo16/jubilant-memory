@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 """
-Topological Sort:
+
+Graph algorithms:
+
+
+----------- Topological Sort:
 + Topological ordering is an ordering of the node where find directed node from root to child.
 + It only work with acyclic directed graph, (DAG).
 + To check if it is DAG: Tarjan's strongly connected component algorithm
 + Topological ordering are not unique. 
-
-Time   Complexity: O(V+E)
-Memory Complexity: O(V)
-
+    Time   Complexity: O(V+E)
+    Memory Complexity: O(V)
 Examples:
-1. Find valid order of installing dependency in python setup.
-2. Can all class be taken with prerequisite
+    1. Find valid order of installing dependency in python setup.
+    2. Can all class be taken with prerequisite
+
+----------- Dijkstra's Shortest Path Algorithm:
++ It work with with weighted graph.
++ Problem is given node we want to find out shortest distance of every node from it.
++ Logic: It is implemented using Priority queue and update the weights.
++ Topological ordering are not unique. 
+    Time   Complexity: O(V+E) * O(v)
+    Memory Complexity: O(V+E)
+
 """
 
+import heapq
 __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
@@ -57,6 +69,36 @@ def topological_sort(graph):
     return reverse_list(ordering)
 
 
+def dijkstra_shortest_path(graph):
+    """
+    Dijkstra's Shortest Path Algorithm
+    
+    """
+    visited = set()
+    start_node = next(iter(graph)) # This point form which we will calculate
+    distance_table = {node:float('inf') for node in graph}
+
+    distance_table[start_node] = 0
+    queue = [(0,start_node)] 
+
+    heapq.heapify(queue)
+
+    while queue:
+
+        curr_dist, curr_node = heapq.heappop(queue)
+
+        if curr_node not in visited:
+            visited.add(curr_node)
+
+            for neighbor, distance in graph[curr_node].items():
+                if neighbor not in visited:
+                    new_distance = distance + curr_dist
+                    if new_distance < distance_table[neighbor]:
+                        distance_table[neighbor] = new_distance
+                        heapq.heappush(queue,(new_distance,neighbor))
+
+    return distance_table
+
 def main():
     """ Main entry point of the app """
     graph = {
@@ -70,6 +112,17 @@ def main():
     stack = topological_sort(graph)
 
     print(stack)
+
+    # Example usage:
+    graph = {
+        'A': {'B': 1, 'C': 4},
+        'B': {'A': 1, 'C': 2, 'D': 5},
+        'C': {'A': 4, 'B': 2, 'D': 1},
+        'D': {'B': 5, 'C': 1}
+    }
+
+    shortest_paths = dijkstra_shortest_path(graph)
+    print(shortest_paths)
 
 
 if __name__ == "__main__":
