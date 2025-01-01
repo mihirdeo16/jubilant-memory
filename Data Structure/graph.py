@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Graph 
+Graph implementation using adjacentList(HashMap), adjacentSet(HashSet) and adjacentMatrix(Matrix)
 """
-
-from typing import Dict, List, Tuple
-from collections import defaultdict
 
 __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
+
+from typing import Dict, List, Tuple
+from collections import defaultdict
 
 edgeSet = List[Tuple[int, int]]
 adjacencyList = Dict[int, List[int]]
