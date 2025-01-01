@@ -7,6 +7,7 @@ __author__ = "Mihir Deo"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
+import re
 from typing import Dict, List
 
 adjacencyList = Dict[int, List[int]]
@@ -362,6 +363,34 @@ def find_minimum_size_island(grid):
                 min_island = min(count, min_island)
     return min_island
 
+def loop_detection(graph):
+    visited = set()
+    start_vertex = next(iter(graph))
+
+    recursion_stack = set()
+
+    def dfs_utls(graph,start_vertex): 
+
+        visited.add(start_vertex) 
+
+        recursion_stack.add(start_vertex) 
+        
+        for neighbor in graph[start_vertex]:
+            if neighbor not in visited:
+                if dfs_utls(graph,neighbor):
+                    return True
+            elif neighbor in recursion_stack:
+                return True
+    
+        recursion_stack.remove(start_vertex)
+        return False
+
+    for vertex in graph:
+        if vertex not in visited:
+            if dfs_utls(graph,start_vertex):
+                return True
+    return False
+
 
 def main():
     """ Main entry point of function.
@@ -407,6 +436,31 @@ def main():
 
     print(
         f"Shortest path between {ele_1} to {ele_2}: {shortest_path(graph,ele_1,ele_2)}")
+    
+    """
+    A ---> B ---> C ---> D ---> E
+    """
+    graph_no_loop = {
+        "A": ["B", "C"],
+        "B": ["C"],
+        "C": ["D"],
+        "D": ["E"],
+        "E": []  # No outgoing edges from E
+    }
+    print("Loop detection in graph_no_loop",loop_detection(graph_no_loop))
+    """
+    A ---> B ---> C ---> D ---> E
+                  ^             |
+                  |-------------|
+    """
+    graph_with_loop = {
+            "A": ["B", "C"],
+            "B": ["C"],
+            "C": ["D"],
+            "D": ["E"],
+            "E": ["B"]  # E points back to B, creating a loop
+        }
+    print("Loop detection in graph_with_loop",loop_detection(graph_with_loop))
 
     grid = [
         ['W', 'L', 'W', 'W', 'L'],
