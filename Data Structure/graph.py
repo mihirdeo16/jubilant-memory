@@ -12,6 +12,8 @@ from collections import defaultdict
 
 edgeSet = List[Tuple[int, int]]
 adjacencyList = Dict[int, List[int]]
+adjacencyListW = Dict[int, Dict]
+
 adjacencyMatrix = List[List[int]]
 
 
@@ -77,6 +79,16 @@ def adjacencyMatrix_to_edgeSet(adjacency_matrix: adjacencyMatrix) -> edgeSet:
                 hashset.append((edge, edge_2))
     return hashset
 
+def weighted_adjacencyMatrix_to_adjacencyList(adjacency_matrix:adjacencyMatrix) -> adjacencyListW:
+
+    adjacency_list = defaultdict(dict)
+
+    for row in range(len(adjacency_matrix)):
+        for col in range(len(adjacency_matrix[0])):
+            if adjacency_matrix[row][col] not in [None, float('inf')] and row!=col:
+                adjacency_list[row][col] = adjacency_matrix[row][col]
+
+    return adjacency_list
 
 def main():
     """ Main entry point of the app 
@@ -111,6 +123,18 @@ def main():
 
     # Matrix to Hashset
     edge_set = adjacencyMatrix_to_edgeSet(adjacency_matrix)
+
+    # Weighted graph:
+    weighted_graph_matrix = [
+            [0, 4, 2, None, None],  # A -> B, A -> C
+            [4, 0, 5, 10, None],    # B -> A, B -> C, B -> D
+            [2, 5, 0, 3, 6],        # C -> A, C -> B, C -> D, C -> E
+            [None, 10, 3, 0, 1],    # D -> B, D -> C, D -> E
+            [None, None, 6, 1, 0]   # E -> C, E -> D
+        ]
+    weighted_graph_adjacency_list = weighted_adjacencyMatrix_to_adjacencyList(weighted_graph_matrix)
+    print(weighted_graph_adjacency_list)
+
 
 
 if __name__ == "__main__":
