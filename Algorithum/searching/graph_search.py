@@ -77,7 +77,7 @@ def dfs_recursive(graph: adjacencyList):
                 if neighbor not in visited:
                     dfs_utils(neighbor)
 
-    dfs_utils(vertex)
+    # dfs_utils(vertex)
 
     # Loop through all nodes in the graph to handle disconnected components
     for vertex in graph:
