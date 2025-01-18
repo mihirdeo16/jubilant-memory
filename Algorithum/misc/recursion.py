@@ -14,6 +14,10 @@ __license__ = "MIT"
 
 from typing import Dict, List, Tuple
 
+def reverse_list_fn(input_list:List):
+    if len(input_list)<= 0:
+        return []
+    return input_list[1:] + [input_list[0]]
 
 def reverse_string_fn(input_string: str):
     if input_string == "":
