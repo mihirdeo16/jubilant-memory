@@ -8,7 +8,7 @@ Graph algorithms:
 + Topological ordering is an ordering of the node where find directed node from root to child.
 + It only work with acyclic directed graph, (DAG).
 + To check if it is DAG: Tarjan's strongly connected component algorithm
-+ Topological ordering are not unique. 
++ Topological ordering are not unique.
     Time   Complexity: O(V+E)
     Memory Complexity: O(V)
 Examples:
@@ -17,9 +17,9 @@ Examples:
 
 ----------- Dijkstra's Shortest Path Algorithm:
 + It work with with weighted graph.
-+ Problem is given node we want to find out shortest distance of every node from it.
++ Problem is given node we want to find out shortest distance of every node from "X" node.
 + Logic: It is implemented using Priority queue and update the weights.
-+ Topological ordering are not unique. 
++ Topological ordering are not unique.
     Time   Complexity: O(V+E) * O(v)
     Memory Complexity: O(V+E)
 
@@ -72,15 +72,14 @@ def topological_sort(graph):
 def dijkstra_shortest_path(graph):
     """
     Dijkstra's Shortest Path Algorithm
-    
+
     """
     visited = set()
-    start_node = next(iter(graph)) # This point form which we will calculate
-    distance_table = {node:float('inf') for node in graph}
+    start_node = next(iter(graph))  # This point form which we will calculate distance 
+    distance_table = {node: float('inf') for node in graph}
 
     distance_table[start_node] = 0
-    queue = [(0,start_node)] 
-
+    queue = [(0, start_node)]
     heapq.heapify(queue)
 
     while queue:
@@ -95,31 +94,40 @@ def dijkstra_shortest_path(graph):
                     new_distance = distance + curr_dist
                     if new_distance < distance_table[neighbor]:
                         distance_table[neighbor] = new_distance
-                        heapq.heappush(queue,(new_distance,neighbor))
+                        heapq.heappush(queue, (new_distance, neighbor))
 
     return distance_table
+
 
 def main():
     """ Main entry point of the app """
     graph = {
         'A': ['B', 'C'],
         'B': ['D'],
-        'C': ['E','F'],
-        'D':[],
+        'C': ['E', 'F'],
+        'D': [],
         'E': [],
-        'F':[]
+        'F': []
     }
     stack = topological_sort(graph)
 
     print(stack)
 
     # Example usage:
+    # graph = {
+    #     'A': {'B': 1, 'C': 4},
+    #     'B': {'A': 1, 'C': 2, 'D': 5},
+    #     'C': {'A': 4, 'B': 2, 'D': 1},
+    #     'D': {'B': 5, 'C': 1}
+    # }
+
     graph = {
-        'A': {'B': 1, 'C': 4},
-        'B': {'A': 1, 'C': 2, 'D': 5},
-        'C': {'A': 4, 'B': 2, 'D': 1},
-        'D': {'B': 5, 'C': 1}
-    }
+        0: {1: 4, 2: 2}, 
+        1: {0: 4, 2: 5, 3: 10}, 
+        2: {0: 2, 1: 5, 3: 3, 4: 6}, 
+        3: {1: 10, 2: 3, 4: 1}, 
+        4: {2: 6, 3: 1}}
+
 
     shortest_paths = dijkstra_shortest_path(graph)
     print(shortest_paths)
