@@ -8,8 +8,8 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 
-from re import A
 from typing import List, Any 
+import collections
 
 class Node:
     """Tree Node """
@@ -50,97 +50,101 @@ def depth_first_traversal(root):
 
     return res
 
-
 def breath_first_traversal(root):
 
     if root is None:
         return []
 
-    traversal_stack = [root]
+    traversal_queue = collections.deque([root])
     res = []
-    while len(traversal_stack) > 0:
+    while traversal_queue:
 
-        node = traversal_stack.pop(0)
-        res.append(node.value)
+        for _ in range(len(traversal_queue)):
+            node = traversal_queue.popleft()
+            res.append(node.value)
 
-        if node.left:
-            traversal_stack.append(node.left)
-        if node.right:
-            traversal_stack.append(node.right)
+            if node.left:
+                traversal_queue.append(node.left)
+            if node.right:
+                traversal_queue.append(node.right)
 
     return res
 
 
-def breath_first_search(root, ele):
-
-    if root is None:
-        return []
-
-    traversal_stack = [root]
-    while len(traversal_stack) > 0:
-
-        node = traversal_stack.pop(0)
-        if node.value == ele:
-            return True
-        if node.left:
-            traversal_stack.append(node.left)
-        if node.right:
-            traversal_stack.append(node.right)
-
-    return False
-
-
-def depth_first_search_recursive(root, ele):
-
-    if root is None:
-        return False
-    if root.value == ele:
-        return True
-
-    return depth_first_search_recursive(root.left, ele) or depth_first_search_recursive(root.right, ele)
-
-
-def depth_first_search(root, ele):
-
-    if root is None:
-        return []
-
-    traversal_stack = [root]
-    while traversal_stack:
-
-        node = traversal_stack.pop()
-        if node.value == ele:
-            return True
-
-        if node.right:
-            traversal_stack.append(node.right)
-        if node.left:
-            traversal_stack.append(node.left)
-
-    return False
-
-
-def tree_sum(root):
+def all_tree_sum(root):
 
     if root is None:
         return 0
 
-    return root.value + tree_sum(root.left) + tree_sum(root.right)
+    return root.value + all_tree_sum(root.left) + all_tree_sum(root.right)
 
+def diameter_max_height_tree(root):
 
-def tree_min_value(root):
+    res = [0]
+    def height_tree(root):
+        if root is None:
+            return 0
+        
+        leftTree = max_height_tree(root.left)
+        rightTree = max_height_tree(root.right)
 
-    if root is None:
-        return float('inf')
+        res[0] = max(res[0],1 + leftTree + rightTree )
 
-    return min(root.value, tree_min_value(root.left), tree_min_value(root.right))
+        return 1 + max(leftTree,rightTree)
+    height_tree(root)
+    return res[0]
 
-
-def max_depth_of_tree(root):
+def max_height_tree(root):
     if root is None:
         return 0
-    return root.value + max(max_depth_of_tree(root.left), max_depth_of_tree(root.right))
+    
+    leftTree = max_height_tree(root.left)
+    rightTree = max_height_tree(root.right)
 
+    return 1 + max(leftTree,rightTree)
+
+def max_width_tree(root):
+    width = 0
+    queue = collections.deque([(root,0)])
+    while queue:
+        _, first_pos = queue[0]
+        _, last_pos = queue[-1]
+
+        for _ in range(len(queue)):
+            node, pos = queue.popleft()
+
+            if node.left:
+                queue.append((node.left,2*pos+1))
+            if node.right:
+                queue.append((node.left,2*pos+2))
+        width = max(width,last_pos-first_pos)
+    return width
+
+def pre_order_traversal(root):
+    """
+    N -> L -> R
+    """
+    if root is None:
+        return []]
+    return [root.val] + pre_order_traversal(root.left) + pre_order_traversal(root.right)
+
+def in_order_traversal(root):
+    """
+    L -> N -> R
+
+    """
+    if root is None:
+        return []
+    return in_order_traversal(root.left) + [root.val] + in_order_traversal(root.right)
+
+def post_order_traversal(root):
+    """
+    L -> R ->  N
+
+    """
+    if root is None:
+        return []
+    return post_order_traversal(root.left) + post_order_traversal(root.right)+ [root.val] 
 
 def array_representation(root) -> List[Any]:
     """
@@ -234,36 +238,26 @@ def main():
         /   \
        11      4
       /  \       \
-     4    2       1
+     5    2       1
 
     """
     root = Node(
                 3, 
                 left=Node(11, left=Node(4), right=Node(2)), 
-                right=Node(4, right=Node(1))
+                right=Node(5, right=Node(1))
                 )
 
-    print(f"depth_first_traversal: {depth_first_traversal(root)}")
-    print(
-        f"depth_first_traversal_recursive: {depth_first_traversal_recursive(root)}")
-    
-    print(f"breath_first_traversal: {breath_first_traversal(root)}")
+    print(f"Depth first traversal: {depth_first_traversal(root)}")
+    print(f"Depth first traversal recursively: {depth_first_traversal_recursive(root)}")
+
+    print(f"Breath first traversal: {breath_first_traversal(root)}")
+
+    print(f"sum of all tree nodes: {all_tree_sum(root)}")
+    # print(f"tree_min_value: {tree_min_value(root)}")
+    print(f"maximum depth of tree: {max_height_tree(root)}")
 
 
-    ele = 1
-    print(
-        f"breath_first_search for ele {ele} : {breath_first_search(root,ele)}")
-
-    ele = 6
-    print(
-        f"breath_first_search for ele {ele}: {breath_first_search(root,ele)}")
-
-    print(f"tree sum: {tree_sum(root)}")
-    print(f"tree_min_value: {tree_min_value(root)}")
-    print(f"max_depth_of_tree: {max_depth_of_tree(root)}")
-
-
-    print(f"\n\narray_representation: {array_representation(root)}")
+    print(f"\narray_representation: {array_representation(root)}")
     array_tree = array_representation(root)
 
     print(f"breath_first_array: {breath_first_array(array_tree)}")
