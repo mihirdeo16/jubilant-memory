@@ -232,37 +232,6 @@ def count_islands(grid):
                 count += 1
     return count
 
-    def explore(gride, row, col, visited):
-
-        pos = str(row) + "," + str(col)
-
-        rowInbound, colInbound = len(gride), len(gride[0])
-        if ((row >= rowInbound) and (row >= 0)) or ((col >= colInbound) and (col >= 0)):
-            return False
-
-        if gride[row][col] == "W":
-            return False
-        if pos in visited:
-            return False
-
-        visited.add(pos)
-
-        explore(gride, row+1, col, visited)
-        explore(gride, row-1, col, visited)
-        explore(gride, row, col-1, visited)
-        explore(gride, row, col+1, visited)
-
-        return True
-
-    visited = set()
-    count = 0
-    for row in range(len(gride)):
-        for col in range(len(gride[0])):
-            if explore(gride, row, col, visited):
-                count += 1
-    return count
-
-
 def find_maximum_size_island(grid):
     """
     Time Complexity: O(R*C)
