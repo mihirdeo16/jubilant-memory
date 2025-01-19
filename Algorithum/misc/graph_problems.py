@@ -232,6 +232,7 @@ def count_islands(grid):
                 count += 1
     return count
 
+
 def find_maximum_size_island(grid):
     """
     Time Complexity: O(R*C)
@@ -332,31 +333,32 @@ def find_minimum_size_island(grid):
                 min_island = min(count, min_island)
     return min_island
 
+
 def loop_detection(graph):
     visited = set()
     start_vertex = next(iter(graph))
 
     recursion_stack = set()
 
-    def dfs_utls(graph,start_vertex): 
+    def dfs_utls(graph, start_vertex):
 
-        visited.add(start_vertex) 
+        visited.add(start_vertex)
 
-        recursion_stack.add(start_vertex) 
-        
+        recursion_stack.add(start_vertex)
+
         for neighbor in graph[start_vertex]:
             if neighbor not in visited:
-                if dfs_utls(graph,neighbor):
+                if dfs_utls(graph, neighbor):
                     return True
             elif neighbor in recursion_stack:
                 return True
-    
+
         recursion_stack.remove(start_vertex)
         return False
 
     for vertex in graph:
         if vertex not in visited:
-            if dfs_utls(graph,start_vertex):
+            if dfs_utls(graph, start_vertex):
                 return True
     return False
 
@@ -366,7 +368,7 @@ def main():
                    0               11 --- 12        14 --- 15      16
             /              \               |
             2               1              13
-         /    \              \
+         /                  \
         5 ---- 6             10
       /                          \
     4                               8
@@ -394,18 +396,17 @@ def main():
         16: []
     }
 
-    print(
-        f"Count of connected components : {count_connected_components(graph)}")
+    print(f"Count of connected components:{count_connected_components(graph)}")
 
     print(
-        f"Length of largest connected components: {largest_connected_components(graph)}")
+        f"Length of largest connected components:{largest_connected_components(graph)}")
 
     ele_1, ele_2 = 4, 16
-    print(f"Has path between {ele_1} to {ele_2}: {hasPath(graph,ele_1,ele_2)}")
+    print(f"Has path between {ele_1} to {ele_2}:{hasPath(graph,ele_1,ele_2)}")
 
     print(
         f"Shortest path between {ele_1} to {ele_2}: {shortest_path(graph,ele_1,ele_2)}")
-    
+
     """
     A ---> B ---> C ---> D ---> E
     """
@@ -416,21 +417,23 @@ def main():
         "D": ["E"],
         "E": []  # No outgoing edges from E
     }
-    print("Loop detection in graph_no_loop",loop_detection(graph_no_loop))
+
+    print("Loop detection in graph_no_loop", loop_detection(graph_no_loop))
     """
     A ---> B ---> C ---> D ---> E
                   ^             |
                   |-------------|
     """
     graph_with_loop = {
-            "A": ["B", "C"],
-            "B": ["C"],
-            "C": ["D"],
-            "D": ["E"],
-            "E": ["B"]  # E points back to B, creating a loop
-        }
-    print("Loop detection in graph_with_loop",loop_detection(graph_with_loop))
+        "A": ["B", "C"],
+        "B": ["C"],
+        "C": ["D"],
+        "D": ["E"],
+        "E": ["B"]  # E points back to B, creating a loop
+    }
+    print("Loop detection in graph_with_loop", loop_detection(graph_with_loop))
 
+    # Grid traversal problem:
     grid = [
         ['W', 'L', 'W', 'W', 'L'],
         ['W', 'L', 'W', 'W', 'W'],
