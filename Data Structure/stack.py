@@ -18,7 +18,7 @@ class Stack:
         if len(self.stack) != 0:
             val = self.stack.pop(-1)
             print(val)
-    def peek(self) -> list:
+    def peek(self) -> None:
         print(self.stack)
 
 def class_main(operation,operations):

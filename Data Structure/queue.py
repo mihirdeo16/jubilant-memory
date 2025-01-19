@@ -16,7 +16,7 @@ class Queue:
         if len(self.queue) != 0:
             val = self.queue.pop(0)
             print(val)
-    def peek(self) -> list:
+    def peek(self) -> None:
         print(self.queue)
 
 def class_main(operation,operations):
