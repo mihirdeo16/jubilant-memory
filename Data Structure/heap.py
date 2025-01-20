@@ -28,7 +28,6 @@ class MaxHeap:
     left:  2*i + 1 
     right: 2*i + 2
 
-
     """
 
     def __init__(self) -> None:
@@ -103,8 +102,6 @@ class MaxHeap:
         return max_ele
 
         
-
-
 class MinHeap:
     """
     Access element by:
@@ -222,14 +219,18 @@ def main():
     print(sorted_array)
 
     # # Using python's module
-    # heapq.heapify(array) # O(n)
-    # print(array)
+    heapq.heapify(array) # O(n)
+    print(array)
 
-    # heapq.heappush(array,2) # O(log n)
-    # print(array)
+    heapq.heappush(array,2) # O(log n)
+    print(array)
 
-    # heapq.heappop(array) # O(log n)
-    # print(array)
+    heapq.heappop(array) # O(log n)
+    print(array)
+
+    # HeapSort O(n log n)
+    sorted_array = [heapq.heappop(array) for _ in range(len(array))] 
+    print(sorted_array)
 
 
 if __name__ == "__main__":
