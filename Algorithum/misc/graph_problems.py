@@ -9,7 +9,7 @@ __license__ = "MIT"
 
 import re
 from typing import Dict, List
-
+import collections
 adjacencyList = Dict[int, List[int]]
 
 
@@ -185,8 +185,79 @@ def shortest_path(graph, start, destination):
 
     return current_dist
 
+def loop_detection(graph):
+    visited = set()
+    start_vertex = next(iter(graph))
+
+    recursion_stack = set()
+
+    def dfs_utls(graph, start_vertex):
+
+        visited.add(start_vertex)
+
+        recursion_stack.add(start_vertex)
+
+        for neighbor in graph[start_vertex]:
+            if neighbor not in visited:
+                if dfs_utls(graph, neighbor):
+                    return True
+            elif neighbor in recursion_stack:
+                return True
+
+        recursion_stack.remove(start_vertex)
+        return False
+
+    for vertex in graph:
+        if vertex not in visited:
+            if dfs_utls(graph, start_vertex):
+                return True
+    return False
+
+def findOrder(numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+    """
+    To be course called as valid where they are DAG, we can use topological sort, convert the edgeSet to adjacencyList. then apply sort
+    """
+    # Create graph of adjacencyList fro edgeSet
+    graph = collections.defaultdict(list)
+    for course, prereq in prerequisites:
+        graph[prereq].append(course)
+
+    ordering = []
+    visited = set()
+    loop_check = set()
+
+    def topological_sort(node,graph,visited,loop_check):
+        if node in loop_check:
+            return False
+        
+        loop_check.add(node)
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                if not topological_sort(neighbor,graph,visited,loop_check):
+                    return False
+        
+        visited.add(node)
+        ordering.append(node)
+        loop_check.remove(node)
+        return True
+
+
+    for course in range(numCourses): 
+        if course not in visited:
+            if not topological_sort(course,graph,visited,loop_check): # Loop is detected
+                return []
+    
+    return ordering[::-1]
+            
+        
+
+
+    
+
+
 
 def count_islands(grid):
+    
     """
     Time Complexity: O(R*C)
     Space Complexity: O(R*C)
@@ -329,39 +400,40 @@ def find_minimum_size_island(grid):
     for row in range(len(grid)):
         for col in range(len(grid[0])):
             count = explore_length_island(grid, row, col, visited)
-            if count > 0:
+            if count > 0: 
                 min_island = min(count, min_island)
     return min_island
 
 
-def loop_detection(graph):
-    visited = set()
-    start_vertex = next(iter(graph))
+def longestIncreasingPath(matrix: List[List[int]]) -> int:
+    visited = {}
 
-    recursion_stack = set()
+    def dfs_find_path(row,col,matrix,visited,prevValue):
+        rowBound, colBound = len(matrix), len(matrix[0])
+        if (row <0 or row >= rowBound) or (col <0 or col >= colBound):
+            return 0
+        
+        if matrix[row][col] <= prevValue:
+            return 0
+        
+        if (row,col) in visited:
+            return visited[(row,col)]
+        
+        res = 1
 
-    def dfs_utls(graph, start_vertex):
+        res = max(res, 1+dfs_find_path(row+1,col,matrix,visited,matrix[row][col]) )
+        
+        res = max(res, 1+ dfs_find_path(row-1,col,matrix,visited,matrix[row][col]) )
+        res = max(res, 1+ dfs_find_path(row,col-1,matrix,visited,matrix[row][col]) )
+        res = max(res, 1 + dfs_find_path(row,col+1,matrix,visited,matrix[row][col]) )
 
-        visited.add(start_vertex)
+        return res
+        
+    for row in range(len(matrix)):
+        for col in range(len(matrix[0])):
+            dfs_find_path(row,col,matrix,visited,-1)
 
-        recursion_stack.add(start_vertex)
-
-        for neighbor in graph[start_vertex]:
-            if neighbor not in visited:
-                if dfs_utls(graph, neighbor):
-                    return True
-            elif neighbor in recursion_stack:
-                return True
-
-        recursion_stack.remove(start_vertex)
-        return False
-
-    for vertex in graph:
-        if vertex not in visited:
-            if dfs_utls(graph, start_vertex):
-                return True
-    return False
-
+    return max(visited.values())
 
 def main():
     """ Main entry point of function.
