@@ -222,6 +222,7 @@ def main():
     heapq.heapify(array) # O(n)
     print(array)
 
+
     heapq.heappush(array,2) # O(log n)
     print(array)
 
