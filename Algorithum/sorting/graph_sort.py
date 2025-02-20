@@ -14,15 +14,6 @@ Graph algorithms:
 Examples:
     1. Find valid order of installing dependency in python setup.
     2. Can all class be taken with prerequisite
-
------------ Dijkstra's Shortest Path Algorithm:
-+ It work with with weighted graph.
-+ Problem is given node we want to find out shortest distance of every node from "X" node.
-+ Logic: It is implemented using Priority queue and update the weights.
-+ Topological ordering are not unique.
-    Time   Complexity: O(V+E) * O(v)
-    Memory Complexity: O(V+E)
-
 """
 
 import heapq
@@ -71,8 +62,13 @@ def topological_sort(graph):
 
 def dijkstra_shortest_path(graph):
     """
-    Dijkstra's Shortest Path Algorithm
-
+    Dijkstra's Shortest Path Algorithm:
+    + It work with with weighted graph.
+    + Problem is given node "X" we want to find out shortest distance of every node from "X" node.
+    + Logic: It is implemented using Priority queue (minHeap) and update the distance to shortest.
+    + Topological ordering are not unique.
+        Time   Complexity: O(V+E) * O(v)
+        Memory Complexity: O(V+E)
     """
     visited = set()
     start_node = next(iter(graph))  # This point form which we will calculate distance 
@@ -89,12 +85,12 @@ def dijkstra_shortest_path(graph):
         if curr_node not in visited:
             visited.add(curr_node)
 
-            for neighbor, distance in graph[curr_node].items():
-                if neighbor not in visited:
-                    new_distance = distance + curr_dist
-                    if new_distance < distance_table[neighbor]:
-                        distance_table[neighbor] = new_distance
-                        heapq.heappush(queue, (new_distance, neighbor))
+            for neighbor_v, distance_e in graph[curr_node].items():
+                if neighbor_v not in visited:
+                    new_distance = distance_e + curr_dist
+                    if new_distance < distance_table[neighbor_v]:
+                        distance_table[neighbor_v] = new_distance
+                        heapq.heappush(queue, (new_distance, neighbor_v))
 
     return distance_table
 
@@ -113,13 +109,6 @@ def main():
 
     print(stack)
 
-    # Example usage:
-    # graph = {
-    #     'A': {'B': 1, 'C': 4},
-    #     'B': {'A': 1, 'C': 2, 'D': 5},
-    #     'C': {'A': 4, 'B': 2, 'D': 1},
-    #     'D': {'B': 5, 'C': 1}
-    # }
 
     graph = {
         0: {1: 4, 2: 2}, 

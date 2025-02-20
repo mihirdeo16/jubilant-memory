@@ -13,7 +13,6 @@ from collections import defaultdict
 edgeSet = List[Tuple[int, int]]
 adjacencyList = Dict[int, List[int]]
 adjacencyListW = Dict[int, Dict]
-
 adjacencyMatrix = List[List[int]]
 
 
