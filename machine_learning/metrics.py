@@ -2,8 +2,6 @@
 Metrics for evaluating machine learning models.
 
 - Regression Metrics: MAE, MSE, RMSE, MAPE
-- Classification Metrics: Accuracy, Precision, Recall, F1-Score
-- NLP Metrics: BLEU, ROUGE, Perplexity
 """
 
 import numpy as np
